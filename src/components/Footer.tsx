@@ -45,7 +45,11 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
           <div>
-            <Link href="https://www.appscrip.com" className="block mb-4">
+            <Link 
+              href="https://www.appscrip.com" 
+              className="block mb-4"
+              aria-label="Visit Appscrip homepage"
+            >
               <Image
                 src={Logo}
                 alt="Appscrip Logo"
@@ -57,7 +61,7 @@ export default function Footer() {
             <p className="text-gray-400 mb-4">
               Empowering businesses with innovative mobile solutions and digital transformation services.
             </p>
-            <div className="flex space-x-4">
+            <div className="flex space-x-4" role="list" aria-label="Social media links">
               {socialLinks.map((social) => (
                 <a
                   key={social.label}
@@ -65,10 +69,15 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-400 hover:text-white transition-colors"
-                  aria-label={`Follow us on ${social.label}`}
+                  aria-label={`Follow us on ${social.label} - Opens in a new tab`}
                 >
                   <span className="sr-only">{social.label}</span>
-                  <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <svg 
+                    className="h-6 w-6" 
+                    fill="currentColor" 
+                    viewBox="0 0 24 24" 
+                    aria-hidden="true"
+                  >
                     {/* Add appropriate SVG path based on social.icon */}
                     <path d="M12 2C6.477 2 2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879V14.89h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.989C18.343 21.129 22 16.99 22 12c0-5.523-4.477-10-10-10z" />
                   </svg>
@@ -80,7 +89,7 @@ export default function Footer() {
           {/* Products */}
           <div>
             <h2 className="text-lg font-semibold mb-4">Products</h2>
-            <ul className="space-y-2">
+            <ul className="space-y-2" role="list">
               {footerLinks.products.map((link) => (
                 <li key={link.label}>
                   <a
@@ -88,6 +97,7 @@ export default function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-gray-400 hover:text-white transition-colors"
+                    aria-label={`${link.label} - Opens in a new tab`}
                   >
                     {link.label}
                   </a>
@@ -99,7 +109,7 @@ export default function Footer() {
           {/* Solutions */}
           <div>
             <h2 className="text-lg font-semibold mb-4">Solutions</h2>
-            <ul className="space-y-2">
+            <ul className="space-y-2" role="list">
               {footerLinks.solutions.map((link) => (
                 <li key={link.label}>
                   <a
@@ -107,6 +117,7 @@ export default function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-gray-400 hover:text-white transition-colors"
+                    aria-label={`${link.label} - Opens in a new tab`}
                   >
                     {link.label}
                   </a>
@@ -118,7 +129,7 @@ export default function Footer() {
           {/* Company */}
           <div>
             <h2 className="text-lg font-semibold mb-4">Company</h2>
-            <ul className="space-y-2">
+            <ul className="space-y-2" role="list">
               {footerLinks.companyLinks.map((link) => (
                 <li key={link.label}>
                   <a
@@ -126,6 +137,7 @@ export default function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-gray-400 hover:text-white transition-colors"
+                    aria-label={`${link.label} - Opens in a new tab`}
                   >
                     {link.label}
                   </a>
@@ -140,12 +152,13 @@ export default function Footer() {
             <p className="text-gray-400 text-sm">
               © {new Date().getFullYear()} Appscrip. All rights reserved.
             </p>
-            <div className="flex space-x-6 mt-4 md:mt-0">
+            <div className="flex space-x-6 mt-4 md:mt-0" role="list">
               <a
                 href="https://www.appscrip.com/privacy-policy"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-white text-sm transition-colors"
+                aria-label="Privacy Policy - Opens in a new tab"
               >
                 Privacy Policy
               </a>
@@ -154,6 +167,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-white text-sm transition-colors"
+                aria-label="Terms of Service - Opens in a new tab"
               >
                 Terms of Service
               </a>
