@@ -2,9 +2,9 @@
 import { gql } from '@apollo/client';
 import client from '../lib/apolloClient';
 import aipulse from '../assets/images/aipulse.webp';
-import { useState } from 'react';
 import ClientPagination from '../components/ClientPagination';
 import TopAIVoices from '../components/TopAIVoices';
+import Image from 'next/image';
 
 export interface Post {
   id: string;
@@ -119,11 +119,14 @@ export default async function Home() {
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Hero Section */}
       <section className="flex flex-col items-center justify-center mb-12">
-        <img
+        <Image
           src={typeof aipulse === 'string' ? aipulse : aipulse.src}
           alt="AI Pulse by appscrip"
+          width={1200}
+          height={220}
           className="w-full max-w-5xl object-contain mb-6"
           style={{ minHeight: '180px' }}
+          priority
         />
         <h2 className="text-xl font-semibold text-center mb-2 mt-4">Your trusted AI resource designed for</h2>
         <p className="text-center italic text-lg mb-6">
