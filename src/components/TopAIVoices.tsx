@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import Image from 'next/image';
 
 const voices = [
   {
@@ -72,7 +73,14 @@ export default function TopAIVoices() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
         {voices.slice(start, start + visible).map((voice, idx) => (
           <div key={idx} className="bg-white rounded shadow border flex flex-col overflow-hidden">
-            <image src={voice.image} alt={voice.name} className="w-full h-56 object-cover" />
+            <Image
+              src={voice.image}
+              alt={voice.name}
+              width={224}
+              height={224}
+              className="w-full h-56 object-cover"
+              unoptimized
+            />
             <div className="p-4 flex-1 flex flex-col">
               <div className="font-bold text-lg mb-1">{voice.username}</div>
               <div className="text-gray-600 mb-4">{voice.description}</div>
