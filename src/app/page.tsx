@@ -6,6 +6,7 @@ import ctabg from "../assets/images/cta_bg.webp";
 import ClientPagination from "../components/ClientPagination";
 import Image from "next/image";
 import HeroSubscribeForm from "../components/HeroSubscribeForm";
+import { Suspense } from 'react';
 
 export interface Post {
   id: string;
@@ -24,71 +25,7 @@ export interface Post {
   };
 }
 
-
-interface PostsData {
-  posts: {
-    nodes: Post[];
-  };
-}
-
-async function getPosts(): Promise<Post[]> {
-  try {
-    console.log("Fetching posts from GraphQL endpoint...");
-    const { data, errors } = await client.query<PostsData>({
-      query: gql`
-        query GetPosts {
-          posts {
-            nodes {
-              id
-              title
-              excerpt
-              content
-              date
-              acffields {
-                sourceName
-                sourceUrl
-              }
-              categories(first: 1) {
-                nodes {
-                  name
-                }
-              }
-            }
-          }
-        }
-      `,
-    });
-
-    if (errors) {
-      console.error("GraphQL Errors:", errors);
-      throw new Error(errors[0].message);
-    }
-
-    if (!data?.posts?.nodes) {
-      console.error("No posts data returned");
-      throw new Error("No posts found");
-    }
-
-    console.log("Successfully fetched posts:", data.posts.nodes.length);
-    return data.posts.nodes;
-  } catch (error) {
-    console.error("Error fetching posts:", error);
-    if (error instanceof Error) {
-      throw new Error(`Failed to fetch posts: ${error.message}`);
-    }
-    throw error;
-  }
-}
-
-export default async function Home() {
-  let posts: Post[] = [];
-  let error: Error | null = null;
-  try {
-    posts = await getPosts();
-  } catch (e) {
-    error = e as Error;
-  }
-
+export default function Home() {
   // Hero Section (full width, before main)
   const heroSection = (
     <section
@@ -117,49 +54,13 @@ export default async function Home() {
     </section>
   );
 
-  if (error) {
-    return (
-      <>
-        {heroSection}
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div
-            role="alert"
-            className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded"
-          >
-            Error loading posts: {error.message}
-            <small className="block mt-2">
-              Please check your WordPress GraphQL endpoint configuration.
-            </small>
-          </div>
-        </main>
-      </>
-    );
-  }
-
-  if (posts.length === 0) {
-    return (
-      <>
-        {heroSection}
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div
-            role="alert"
-            className="bg-yellow-50 border border-yellow-200 text-yellow-700 px-4 py-3 rounded"
-          >
-            No posts found.
-            <small className="block mt-2">
-              Make sure you have published posts in your WordPress site.
-            </small>
-          </div>
-        </main>
-      </>
-    );
-  }
-
   return (
     <>
       {heroSection}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <ClientPagination posts={posts} />
+        <Suspense fallback={<div className="text-center">Loading posts...</div>}>
+          <ClientPagination />
+        </Suspense>
         {/* CTA Section */}
         <section
           className="flex flex-col items-center justify-center mb-12 mt-12 bg-cover bg-center py-8"

@@ -2,16 +2,109 @@
 
 import type { Post } from "../app/page";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+
+// GraphQL query (as a string)
+const GET_POSTS_QUERY = `
+  query GetPosts {
+    posts {
+      nodes {
+        id
+        title
+        excerpt
+        content
+        date
+        slug
+        acffields {
+          sourceName
+          sourceUrl
+        }
+        categories(first: 1) {
+          nodes {
+            name
+          }
+        }
+      }
+    }
+  }
+`;
+
+// Fetcher function using the native fetch API
+async function fetchPosts(): Promise<Post[]> {
+  const graphqlEndpoint = 'https://wordpress-1336774-5410140.cloudwaysapps.com/graphql'; // Replace with your actual GraphQL endpoint
+
+  const response = await fetch(graphqlEndpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ query: GET_POSTS_QUERY }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const result = await response.json();
+
+  if (result.errors) {
+    console.error("GraphQL Errors:", result.errors);
+    throw new Error(result.errors[0].message);
+  }
+
+  return result?.data?.posts?.nodes || [];
+}
 
 // Client Pagination Component
-export default function ClientPagination({ posts }: { posts: Post[] }) {
+export default function ClientPagination() {
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 5;
-  const totalPages = Math.ceil(posts.length / postsPerPage);
-  const paginatedPosts = posts.slice(
+
+  const { data: posts, isLoading, isError, error } = useQuery<Post[]>({
+    queryKey: ['posts'],
+    queryFn: fetchPosts,
+    refetchInterval: 5000,
+  });
+
+  // Handle loading and error states
+  if (isLoading) {
+    return <div className="text-center">Loading posts...</div>;
+  }
+
+  if (isError) {
+    return (
+      <div
+        role="alert"
+        className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded"
+      >
+        Error loading posts: {error instanceof Error ? error.message : 'An unknown error occurred'}
+        <small className="block mt-2">
+          Please check your WordPress GraphQL endpoint configuration and network connection.
+        </small>
+      </div>
+    );
+  }
+
+  // Use the fetched posts for pagination
+  const totalPages = posts ? Math.ceil(posts.length / postsPerPage) : 0;
+  const paginatedPosts = posts ? posts.slice(
     (currentPage - 1) * postsPerPage,
     currentPage * postsPerPage
-  );
+  ) : [];
+
+  if (!posts || posts.length === 0) {
+    return (
+      <div
+        role="alert"
+        className="bg-yellow-50 border border-yellow-200 text-yellow-700 px-4 py-3 rounded"
+      >
+        No posts found.
+        <small className="block mt-2">
+          Make sure you have published posts in your WordPress site.
+        </small>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -24,7 +117,7 @@ export default function ClientPagination({ posts }: { posts: Post[] }) {
             {/* Date and Source */}
             <div className="flex items-center text-xs text-teal-600 mb-2">
               <span>
-                {new Date(post.date).toLocaleDateString(undefined, {
+                {new Date(post.date).toLocaleDateString('en-US', {
                   year: "numeric",
                   month: "long",
                   day: "numeric",
