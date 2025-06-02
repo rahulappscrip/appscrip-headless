@@ -1,6 +1,5 @@
 "use client";
-import { gql } from "@apollo/client";
-import client from "../lib/apolloClient";
+
 import aipulse from "../assets/images/aipulse.webp";
 import ctabg from "../assets/images/cta_bg.webp";
 import ClientPagination from "../components/ClientPagination";
