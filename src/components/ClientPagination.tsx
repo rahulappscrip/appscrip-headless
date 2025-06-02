@@ -13,19 +13,6 @@ export default function ClientPagination({ posts }: { posts: Post[] }) {
     currentPage * postsPerPage
   );
 
-  // Helper to strip HTML tags
-  function stripHtml(html: string) {
-    if (!html) return "";
-    return html.replace(/<[^>]+>/g, "");
-  }
-
-  // Helper to limit text to a certain number of words
-  function limitWords(text: string, maxWords: number) {
-    const words = text.split(/\s+/);
-    if (words.length <= maxWords) return text;
-    return words.slice(0, maxWords).join(" ") + "...";
-  }
-
   return (
     <>
       <section className="space-y-8">
